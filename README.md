@@ -1,6 +1,6 @@
 # Rush Hour Solver
 
-A command-line program that solves [Rush Hour](https://en.wikipedia.org/wiki/Rush_Hour_(puzzle)) sliding-car puzzles using **breadth-first search (BFS)**. Pick a level, and it finds the fewest moves needed to get the target car out, then shows the board after every move.
+A command-line game for [Rush Hour](https://en.wikipedia.org/wiki/Rush_Hour_(puzzle)) sliding-car puzzles, with a solver that uses **breadth-first search (BFS)**. Pick a level and solve it yourself by typing moves. If you get stuck, ask for a hint or have the solver show you the rest of the answer. When you win, it tells you the fewest moves possible.
 
 ## How it works
 
@@ -43,10 +43,22 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Then pick a level:
+Pick a level, then type moves until car `X` reaches the right edge. A move is the car's letter, a direction, and how many squares to slide it, like `A down 2`. Capital letters don't matter.
+
+| Command | What it does |
+|---------|--------------|
+| `A down 2` | Slide car A down 2 squares (directions: `left`, `right`, `up`, `down`) |
+| `hint` | Show the best next move from the current board |
+| `solve` | Show the rest of the solution, one board per move, and end the game |
+| `help` | Show the instructions again |
+| `quit` | Exit the game |
+
+If a move isn't allowed (the car is blocked, the car doesn't move in that direction, or there's no car with that letter), the game explains why and lets you try again.
+
+Example game:
 
 ```
-RUSH HOUR SOLVER
+RUSH HOUR
   1. Easy
   2. Medium
   3. Hard
@@ -60,7 +72,15 @@ XX.A..
 ......
 ......
 
-Move 1: A ↑ 2
+How to play: get car X to the right edge of the board.
+  Type a move like:  A down 2   (car, direction, squares)
+  Directions: left, right, up, down
+  Other commands: hint, solve, help, quit
+
+Your move: hint
+Hint: A up 2
+Your move: A up 2
+
 ...A..
 ...A..
 XX....
@@ -68,7 +88,8 @@ XX....
 ......
 ......
 
-Move 2: X → 4
+Your move: X right 4
+
 ...A..
 ...A..
 ....XX
@@ -76,7 +97,8 @@ Move 2: X → 4
 ......
 ......
 
-Solved in 2 moves! Checked 19 boards.
+You solved it in 2 moves!
+The fewest moves possible is 2.
 ```
 
 ## Levels
@@ -108,19 +130,18 @@ DD...C
 
 ## Running the tests
 
-From the project's root folder:
-
 ```bash
-python -m pytest
+pytest
 ```
 
-The tests cover cars, loading boards, finding legal moves, and the solver itself, including a puzzle with no solution.
+The tests cover cars, loading boards, finding legal moves, the solver (including a puzzle with no solution), and the game: reading typed moves, rejecting illegal ones, and the `hint`, `solve`, and `quit` commands.
 
 ## Project structure
 
 ```
 rush-hour-solver/
-├── main.py          # level menu and output
+├── main.py          # level menu and the game: typed moves, hints, solving
+├── pytest.ini       # lets pytest find the project's code
 ├── puzzles/         # easy, medium, and hard puzzle files
 ├── solver/
 │   ├── car.py       # Car class: position, length, direction
@@ -132,4 +153,4 @@ rush-hour-solver/
 
 ## What's next
 
-- A Pygame version with a visual board and a "Watch it solve" mode
+- A Pygame version with a visual board and an "Auto-solve" button
