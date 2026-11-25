@@ -186,6 +186,11 @@ function show_infobox() {
 // Pink Lane: answer the CLICK TO PLAY click instantly. Pygame still needs a
 // couple of seconds to load after the click (browsers only allow that after a
 // tap or click), so show that it's starting instead of a button that looks stuck.
+//
+// This only listens for "click", which happens after the finger lifts. Reacting
+// to "touchstart" instead made phones need two taps: on iPhones, changing the
+// page the moment a finger touches it cancels the click that follows, and
+// pygbag waits for that click before it starts the game.
 function pink_lane_starting() {
     if (!infobox.classList.contains("ready"))
         return;
@@ -194,8 +199,7 @@ function pink_lane_starting() {
     brand.classList.remove("ready");  // bring the loading bar back
     show_infobox();
 }
-for (const type of ["pointerdown", "touchstart", "keydown"])
-    window.addEventListener(type, pink_lane_starting, true);
+window.addEventListener("click", pink_lane_starting);
 
 </script>
 
