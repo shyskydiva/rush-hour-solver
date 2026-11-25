@@ -1,3 +1,4 @@
+"""Finding the moves every car can make, and making them."""
 from solver.board import SIZE
 
 # Direction word for each (horizontal?, moving right/down?) combination.
@@ -7,6 +8,7 @@ DIRECTIONS = {
     (False, True): "down",
     (False, False): "up",
 }
+
 
 class Move:
     """Slide one car a number of squares."""
@@ -22,31 +24,33 @@ class Move:
         return f"{self.car_name} {direction} {abs(self.steps)}"
 
 
-def fits(new_car, old_car, taken):
-    """Check that a moved car stays on the board and doesn't hit another car."""
-    for row, col in new_car.cells():
-        # Off the edge of the board?
-        if row < 0 or row >= SIZE or col < 0 or col >= SIZE:
-            return False
-        # Taken by a different car? (Squares the car already covers are fine.)
-        if (row, col) in taken and (row, col) not in old_car.cells():
-            return False
-    return True
-
-
 def legal_moves(board):
-    """Return every move any car can make right now."""
+    """Return every move any car can make right now.
+
+    A sliding car only ever enters one new square per step: the one just past
+    its front (or back) end. So we only need to check that one square each time.
+    """
     moves = []
     taken = board.occupied()
 
     for car in board.cars.values():
+        cells = car.cells()
         # Try both directions: -1 (left/up) and +1 (right/down).
         for direction in [-1, 1]:
-            steps = direction
-            # Keep sliding one more square until the car hits something.
-            while fits(car.moved(steps), car, taken):
-                moves.append(Move(car.name, steps, car.horizontal))
+            # Start at the end of the car that faces this direction.
+            row, col = cells[0] if direction < 0 else cells[-1]
+            steps = 0
+            # Keep sliding one more square until the car would leave the board or hit something.
+            while True:
+                if car.horizontal:
+                    col = col + direction
+                else:
+                    row = row + direction
+                off_board = row < 0 or row >= SIZE or col < 0 or col >= SIZE
+                if off_board or (row, col) in taken:
+                    break
                 steps = steps + direction
+                moves.append(Move(car.name, steps, car.horizontal))
 
     return moves
 

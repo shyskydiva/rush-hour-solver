@@ -1,4 +1,4 @@
-from main import PUZZLES
+from solver.levels import PUZZLES
 from solver.bfs import solve
 from solver.board import board_from_lines, load_board
 from solver.moves import apply_move

@@ -1,3 +1,6 @@
+"""One car on the board: where it is, how long it is, and which way it slides."""
+
+
 class Car:
     """One car on the board."""
 

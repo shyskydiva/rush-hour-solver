@@ -105,4 +105,4 @@ def test_pick_level_asks_again_after_a_bad_choice(monkeypatch, capsys):
     type_these(monkeypatch, ["9", "", "2"])
     name, path = pick_level()
     assert name == "Medium"
-    assert capsys.readouterr().out.count("Please type 1, 2, or 3.") == 2
+    assert capsys.readouterr().out.count("Please type a number from 1 to 3.") == 2

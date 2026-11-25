@@ -1,2 +1,2 @@
 pygame==2.6.1
-pytest
+pytest==9.2.0

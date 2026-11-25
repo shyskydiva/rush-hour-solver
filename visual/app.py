@@ -1,7 +1,7 @@
 """The game window: runs the main loop and switches between screens."""
 import pygame
 
-from main import LEVELS
+from solver.levels import LEVELS
 from solver.bfs import solve
 from solver.board import load_board
 from visual import theme
@@ -18,7 +18,7 @@ class App:
         self.clock = pygame.time.Clock()
         self.running = True
 
-        self.levels = list(LEVELS.values())   # [(name, puzzle file), ...]
+        self.levels = LEVELS                  # [(name, puzzle file), ...]
         self.cleared = {}                     # level index -> {"moves": ..., "gems": ...}
         self.best = {}                        # level index -> fewest moves possible
         self.scene = TitleScreen(self)

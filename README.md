@@ -16,10 +16,16 @@ The solver uses breadth-first search:
 1. Start with the puzzle's board.
 2. Find every legal move from that board and make a new board for each one.
 3. Check all boards 1 move away, then all boards 2 moves away, and so on.
-4. Skip any board that's already been seen.
-5. Stop at the first board where `X` reaches the exit.
+4. Skip any board that's already been seen. For each new board, remember which board it came from and the move that got there.
+5. Stop at the first board where `X` reaches the exit, then follow those notes back to the start to get the list of moves.
 
 Because BFS checks boards in order of how many moves they take, the first solution it finds is always the shortest one.
+
+A few details keep it fast:
+
+- **Small board keys.** To check whether a board has been seen, the solver compares a short list of car positions, not a drawing of the whole grid.
+- **One square per step.** When a car slides, only the square just past its front (or back) end can block it, so that's the only square checked.
+- **Shared cars.** A new board only replaces the car that moved. All the other cars are shared with the board it came from, so making a new board is cheap.
 
 ## Getting started
 
@@ -138,6 +144,8 @@ Each puzzle is a text file with 6 lines of 6 characters:
 - `X` is the target car (it must be horizontal)
 - Any other letter is a car. A car's letters sit next to each other in one row or one column, and it's 2 or 3 squares long.
 
+If a puzzle file breaks one of these rules, loading it stops with an error that says what's wrong, like `Car A's squares must touch, in one straight line`.
+
 Example (`puzzles/medium.txt`):
 
 ```
@@ -171,7 +179,8 @@ rush-hour-solver/
 │   ├── car.py       # Car class: position, length, direction
 │   ├── board.py     # Board class and puzzle file loading
 │   ├── moves.py     # finding and applying legal moves
-│   └── bfs.py       # breadth-first search solver
+│   ├── bfs.py       # breadth-first search solver
+│   └── levels.py    # the list of levels, shared by both versions
 ├── visual/          # Pink Lane
 │   ├── app.py       # game window, screen switching, level progress
 │   ├── theme.py     # colors, sizes, and fonts from the style guide

@@ -417,8 +417,9 @@ class GameScreen:
         surface.set_clip(None)
 
         # Hint: once the solver is revealed, outline where its next move goes.
-        moves = self.solution()[0]
-        if self.revealed and self.selected is None and not self.won and moves:
+        # (Only ask for the solution then, so plain moves never wait on the solver.)
+        moves = self.solution()[0] if self.revealed else None
+        if self.selected is None and not self.won and moves:
             hint = moves[0]
             ghost = self.board.cars[hint.car_name].moved(hint.steps)
             draw.dashed_rect(surface, theme.CYAN, car_rect(ghost))
@@ -467,10 +468,12 @@ class GameScreen:
         x, y, w, h = PANEL_X, BOARD_Y + 90, PANEL_W, 262
         pygame.draw.polygon(surface, theme.PANEL, [(x, y), (x + w, y), (x + w, y + h - 14), (x + w - 14, y + h), (x, y + h)])
 
-        moves, checked, _ = self.solution()
+        moves, checked = None, 0
+        if self.revealed:
+            moves, checked, _ = self.solution()
         title = "SOLVER // BFS" if self.revealed else "YOUR MOVES"
         draw.text(surface, title, theme.font("bold", 14), theme.TEXT, (x + 16, y + 16), spacing=2)
-        if self.revealed and moves is not None and not self.won:
+        if moves is not None and not self.won:
             # How many board layouts BFS looked at to find the shortest way out from here
             draw.text(surface, f"{checked} boards checked · {len(moves)} to go", theme.font("regular", 13),
                       theme.MUTED, (x + w - 16, y + 16), anchor="topright")

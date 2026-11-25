@@ -169,6 +169,18 @@ def test_pausing_freezes_the_timer_and_auto_solve(app):
     assert not game.paused
 
 
+def test_plain_moves_never_wait_on_the_solver(app):
+    # Until you use Auto-solve, the solver shouldn't run at all (it made every move stutter).
+    app.play(2)
+    game = app.scene
+    game.selected = "A"
+    press(game, pygame.K_RIGHT)
+    game.update(1 / 60)
+    game.draw(app.screen)
+    assert len(game.history) == 1
+    assert game.solution_cache is None
+
+
 def test_every_screen_draws_without_errors(app):
     for show in (app.show_title, app.show_levels, lambda: app.play(2)):
         show()

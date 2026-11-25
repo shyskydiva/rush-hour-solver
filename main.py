@@ -1,19 +1,8 @@
-from pathlib import Path
-
+"""The text version of the game. (play.py starts Pink Lane, the Pygame version.)"""
 from solver.bfs import solve
 from solver.board import load_board
+from solver.levels import LEVELS
 from solver.moves import apply_move, legal_moves
-
-# The puzzles folder sits next to this file, so this works no matter
-# which folder you run the program from.
-PUZZLES = Path(__file__).parent / "puzzles"
-
-# The three levels: menu number -> (name, puzzle file)
-LEVELS = {
-    "1": ("Easy", PUZZLES / "easy.txt"),
-    "2": ("Medium", PUZZLES / "medium.txt"),
-    "3": ("Hard", PUZZLES / "hard.txt"),
-}
 
 HELP = """How to play: get car X to the right edge of the board.
   Type a move like:  A down 2   (car, direction, squares)
@@ -24,14 +13,15 @@ HELP = """How to play: get car X to the right edge of the board.
 def pick_level():
     """Ask for a level until the player types a valid number."""
     print("RUSH HOUR")
-    for number, (name, _) in LEVELS.items():
+    for number, (name, _) in enumerate(LEVELS, start=1):
         print(f"  {number}. {name}")
 
+    count = len(LEVELS)
     while True:
-        choice = input("Pick a level (1-3): ").strip()
-        if choice in LEVELS:
-            return LEVELS[choice]
-        print("Please type 1, 2, or 3.")
+        choice = input(f"Pick a level (1-{count}): ").strip()
+        if choice.isdigit() and 1 <= int(choice) <= count:
+            return LEVELS[int(choice) - 1]
+        print(f"Please type a number from 1 to {count}.")
 
 
 def find_move(board, text):

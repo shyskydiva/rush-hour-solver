@@ -1,3 +1,4 @@
+"""The breadth-first search solver."""
 from collections import deque
 
 from solver.moves import apply_move, legal_moves
@@ -12,25 +13,37 @@ def solve(start_board):
     Returns (list of moves, number of boards checked).
     The list is None if the puzzle can't be solved.
     """
-    # Each item in the queue is a board plus the moves it took to get there.
-    queue = deque()
-    queue.append((start_board, []))
+    queue = deque([start_board])
 
-    # Remember boards we've already seen so we don't check them twice.
-    seen = set()
-    seen.add(start_board.key())
+    # For every board we've seen: the board it came from and the move that got
+    # there. This doubles as the "already seen" check, and it lets us rebuild the
+    # winning path at the end instead of copying a path for every board.
+    came_from = {start_board.key(): None}
 
     while len(queue) > 0:
-        board, path = queue.popleft()  # take the oldest board first
+        board = queue.popleft()  # take the oldest board first
 
         if board.is_solved():
-            return path, len(seen)
+            return path_to(board, came_from), len(came_from)
 
         for move in legal_moves(board):
             next_board = apply_move(board, move)
-            if next_board.key() not in seen:
-                seen.add(next_board.key())
-                queue.append((next_board, path + [move]))
+            key = next_board.key()
+            if key not in came_from:
+                came_from[key] = (board, move)
+                queue.append(next_board)
 
     # We ran out of boards to check, so there's no solution.
-    return None, len(seen)
+    return None, len(came_from)
+
+
+def path_to(board, came_from):
+    """Walk back from a board to the start, collecting the moves in order."""
+    moves = []
+    step = came_from[board.key()]
+    while step is not None:
+        board, move = step
+        moves.append(move)
+        step = came_from[board.key()]
+    moves.reverse()
+    return moves
