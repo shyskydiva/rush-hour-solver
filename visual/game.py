@@ -20,13 +20,19 @@ GLIDE = 0.035             # how quickly cars slide to their new square (smaller 
 NUDGE_TIME = 0.12         # how long a blocked car bumps before snapping back
 EXIT_TIME = 0.7           # how long the winning car takes to drive off
 
-ARROW_KEYS = {
-    # key: (moves horizontally?, step)
-    pygame.K_LEFT: (True, -1),
-    pygame.K_RIGHT: (True, 1),
-    pygame.K_UP: (False, -1),
-    pygame.K_DOWN: (False, 1),
-}
+def arrow_direction(key):
+    """For an arrow key, return (moves horizontally?, step). For any other key, None.
+
+    This is a function rather than a dictionary at the top of the file because
+    in the web version, Pygame's key names don't exist yet when this file loads.
+    """
+    directions = {
+        pygame.K_LEFT: (True, -1),
+        pygame.K_RIGHT: (True, 1),
+        pygame.K_UP: (False, -1),
+        pygame.K_DOWN: (False, 1),
+    }
+    return directions.get(key)
 
 
 def cell_rect(row, col):
@@ -171,7 +177,7 @@ class GameScreen:
         if self.selected is None:
             return
         car = self.board.cars[self.selected]
-        horizontal, step = ARROW_KEYS[key]
+        horizontal, step = arrow_direction(key)
         if horizontal != car.horizontal:
             return  # this car doesn't move that way
         for move in legal_moves(self.board):
@@ -284,7 +290,7 @@ class GameScreen:
                     self.pause()
             elif event.key == pygame.K_p:
                 self.pause()
-            elif event.key in ARROW_KEYS:
+            elif arrow_direction(event.key) is not None:
                 self.arrow_move(event.key)
             elif event.key in (pygame.K_z, pygame.K_BACKSPACE):
                 self.undo()
