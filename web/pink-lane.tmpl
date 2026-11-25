@@ -217,6 +217,19 @@ function show_infobox() {
 
         /* ---- Pink Lane loading screen ---- */
 
+        /* It's a game page, not a document: taps and clicks should never select
+           text, show the phone tap flash, open the long-press menu, or draw a
+           focus box around the canvas. */
+        html, body, #brand, #infobox, canvas {
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        canvas:focus, canvas:focus-visible, #terminal:focus {
+            outline: none;
+        }
+
         /* Status line while loading; becomes the pink CLICK TO PLAY button when ready. */
         #infobox {
             position: fixed; /* center relative to viewport */
