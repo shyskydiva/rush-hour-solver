@@ -2,9 +2,11 @@
 
 A game for [Rush Hour](https://en.wikipedia.org/wiki/Rush_Hour_(puzzle)) sliding-car puzzles, with a solver that uses **breadth-first search (BFS)**. Pick a level and solve it yourself. If you get stuck, ask the solver for help. When you win, it tells you the fewest moves possible.
 
+**▶ [Play Pink Lane in your browser](https://shyskydiva.github.io/rush-hour-solver/)**, no install needed. It takes a few seconds to load the first time.
+
 It comes in two versions that share the same solver:
 
-- **Pink Lane** (`main.py`): a Pygame window where you click cars to slide them.
+- **Pink Lane** (`main.py`): a Pygame game where you click cars to slide them. It runs on your computer or in a web browser.
 - **Text version** (`text_game.py`): play in the terminal by typing moves.
 
 ## How it works
@@ -63,6 +65,26 @@ Press **PLAY** (or Enter) to start the first level you haven't cleared, or pick 
 - **Keyboard shortcuts:** `Z` undo, `R` reset, `Space` Auto-solve, `Esc` or `P` pause.
 
 When you clear a level, you get up to 3 gems: 3 for the fewest moves possible, 2 for within 3 moves of it, and 1 otherwise. Using Auto-solve still clears the level, but earns no gems.
+
+## The web version
+
+The [browser version](https://shyskydiva.github.io/rush-hour-solver/) is built with [pygbag](https://pypi.org/project/pygbag/), which runs Python and Pygame in the browser using WebAssembly. Every push to `main` rebuilds and publishes it to GitHub Pages automatically (see `.github/workflows/pages.yml`).
+
+To build and test it on your own computer:
+
+```bash
+pip install pygbag==0.9.3
+pygbag --template web/pink-lane.tmpl --icon web/favicon.png --width 960 --height 640 .
+```
+
+Then open http://localhost:8000. Add `--build` to only build the files (into `build/web/`) without starting the test server.
+
+A few things the web version depends on:
+
+- `main.py` must import `pygame` itself. pygbag only reads that file to decide which libraries to load.
+- The main loop in `visual/app.py` is `async` and calls `await asyncio.sleep(0)` every frame, so the browser gets a turn to draw.
+- `pygbag.ini` keeps `.venv/`, `tests/`, and `web/` out of the game package.
+- `web/pink-lane.tmpl` is the loading page (based on pygbag's default template), and `web/favicon.png` is the tab icon.
 
 ## Playing the text version
 
@@ -174,6 +196,9 @@ rush-hour-solver/
 ├── main.py          # starts Pink Lane (also the web version's starting point)
 ├── text_game.py     # the text version: typed moves, hints, solving
 ├── pytest.ini       # lets pytest find the project's code
+├── pygbag.ini       # folders to leave out of the web version
+├── .github/workflows/pages.yml  # builds and publishes the web version
+├── web/             # web version's loading page and tab icon
 ├── puzzles/         # easy, medium, and hard puzzle files
 ├── solver/
 │   ├── car.py       # Car class: position, length, direction

@@ -26,7 +26,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install pygbag==0.9.3   # the version tested locally
-      - run: python -m pygbag --build .
+      # web/ holds the Pink Lane loading page and tab icon; 960x640 is the game's size.
+      - run: python -m pygbag --build --template web/pink-lane.tmpl --icon web/favicon.png --width 960 --height 640 .
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build/web
