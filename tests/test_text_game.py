@@ -1,5 +1,5 @@
-from main import find_move, pick_level, play
 from solver.board import board_from_lines
+from text_game import find_move, pick_level, play
 
 # The easy puzzle: X needs to get past A, which blocks its row.
 EASY = ["......", "......", "XX.A..", "...A..", "......", "......"]

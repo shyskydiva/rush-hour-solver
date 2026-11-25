@@ -70,3 +70,8 @@ def font(style, size):
         else:
             _loaded_fonts[key] = pygame.font.SysFont("arial", size, bold=style != "regular")
     return _loaded_fonts[key]
+
+
+def forget_fonts():
+    """Drop the loaded fonts. Call this when Pygame shuts down, since they stop working then."""
+    _loaded_fonts.clear()

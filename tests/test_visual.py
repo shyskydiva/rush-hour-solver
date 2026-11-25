@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 import pytest
@@ -179,6 +180,12 @@ def test_plain_moves_never_wait_on_the_solver(app):
     game.draw(app.screen)
     assert len(game.history) == 1
     assert game.solution_cache is None
+
+
+def test_main_loop_runs_until_the_window_closes(app):
+    pygame.event.post(pygame.event.Event(pygame.QUIT))  # pretend the player closed the window
+    asyncio.run(app.run())
+    assert not app.running
 
 
 def test_every_screen_draws_without_errors(app):

@@ -4,8 +4,8 @@ A game for [Rush Hour](https://en.wikipedia.org/wiki/Rush_Hour_(puzzle)) sliding
 
 It comes in two versions that share the same solver:
 
-- **Pink Lane** (`play.py`): a Pygame window where you click cars to slide them.
-- **Text version** (`main.py`): play in the terminal by typing moves.
+- **Pink Lane** (`main.py`): a Pygame window where you click cars to slide them.
+- **Text version** (`text_game.py`): play in the terminal by typing moves.
 
 ## How it works
 
@@ -51,7 +51,7 @@ pip install -r requirements.txt
 ## Playing Pink Lane (Pygame)
 
 ```bash
-python play.py
+python main.py
 ```
 
 Press **PLAY** (or Enter) to start the first level you haven't cleared, or pick one from **LEVELS**. Each level unlocks when you clear the one before it.
@@ -67,7 +67,7 @@ When you clear a level, you get up to 3 gems: 3 for the fewest moves possible, 2
 ## Playing the text version
 
 ```bash
-python main.py
+python text_game.py
 ```
 
 Pick a level, then type moves until car `X` reaches the right edge. A move is the car's letter, a direction, and how many squares to slide it, like `A down 2`. Capital letters don't matter.
@@ -171,8 +171,8 @@ The Pink Lane tests need Pygame, so run them with the virtual environment active
 
 ```
 rush-hour-solver/
-├── play.py          # starts Pink Lane, the Pygame version
-├── main.py          # the text version: typed moves, hints, solving
+├── main.py          # starts Pink Lane (also the web version's starting point)
+├── text_game.py     # the text version: typed moves, hints, solving
 ├── pytest.ini       # lets pytest find the project's code
 ├── puzzles/         # easy, medium, and hard puzzle files
 ├── solver/

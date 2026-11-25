@@ -1,9 +1,11 @@
 """The game window: runs the main loop and switches between screens."""
+import asyncio
+
 import pygame
 
-from solver.levels import LEVELS
 from solver.bfs import solve
 from solver.board import load_board
+from solver.levels import LEVELS
 from visual import theme
 from visual.game import GameScreen
 from visual.levels import LevelsScreen
@@ -63,7 +65,13 @@ class App:
 
     # --- Main loop ---
 
-    def run(self):
+    async def run(self):
+        """Run the game until the window closes.
+
+        It's async so it also works in a web browser (through pygbag): after each
+        frame, `await asyncio.sleep(0)` hands control back to the browser so it
+        can draw the frame and handle input. On your computer it makes no difference.
+        """
         while self.running:
             dt = self.clock.tick(60) / 1000  # seconds since the last frame
             for event in pygame.event.get():
@@ -74,4 +82,6 @@ class App:
             self.scene.update(dt)
             self.scene.draw(self.screen)
             pygame.display.flip()
+            await asyncio.sleep(0)
+        theme.forget_fonts()
         pygame.quit()
