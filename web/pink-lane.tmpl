@@ -183,6 +183,20 @@ function show_infobox() {
     infobox.style.top = top + "px";
 }
 
+// Pink Lane: answer the CLICK TO PLAY click instantly. Pygame still needs a
+// couple of seconds to load after the click (browsers only allow that after a
+// tap or click), so show that it's starting instead of a button that looks stuck.
+function pink_lane_starting() {
+    if (!infobox.classList.contains("ready"))
+        return;
+    infobox.classList.remove("ready");
+    infobox.innerText = "STARTING...";
+    brand.classList.remove("ready");  // bring the loading bar back
+    show_infobox();
+}
+for (const type of ["pointerdown", "touchstart", "keydown"])
+    window.addEventListener(type, pink_lane_starting, true);
+
 </script>
 
     <title>Pink Lane</title>
