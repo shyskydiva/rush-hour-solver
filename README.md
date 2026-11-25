@@ -1,6 +1,11 @@
 # Rush Hour Solver
 
-A command-line game for [Rush Hour](https://en.wikipedia.org/wiki/Rush_Hour_(puzzle)) sliding-car puzzles, with a solver that uses **breadth-first search (BFS)**. Pick a level and solve it yourself by typing moves. If you get stuck, ask for a hint or have the solver show you the rest of the answer. When you win, it tells you the fewest moves possible.
+A game for [Rush Hour](https://en.wikipedia.org/wiki/Rush_Hour_(puzzle)) sliding-car puzzles, with a solver that uses **breadth-first search (BFS)**. Pick a level and solve it yourself. If you get stuck, ask the solver for help. When you win, it tells you the fewest moves possible.
+
+It comes in two versions that share the same solver:
+
+- **Pink Lane** (`play.py`): a Pygame window where you click cars to slide them.
+- **Text version** (`main.py`): play in the terminal by typing moves.
 
 ## How it works
 
@@ -37,7 +42,23 @@ Install the requirements:
 pip install -r requirements.txt
 ```
 
-## Usage
+## Playing Pink Lane (Pygame)
+
+```bash
+python play.py
+```
+
+Press **PLAY** (or Enter) to start the first level you haven't cleared, or pick one from **LEVELS**. Each level unlocks when you clear the one before it.
+
+- **Move a car:** click it, then click one of the highlighted squares. You can also use the arrow keys to slide the selected car one square at a time.
+- **Auto-solve:** the solver drives the cars for you. Press **Pause solver** to stop it, then **Resume** to let it keep driving or **Next step** to go one move at a time. The solver's planned moves appear in the side panel, and a dashed outline shows where its next move goes.
+- **Undo / Reset:** take back your last move, or start the level over.
+- **Pause:** the pause button in the top right (or `Esc`) freezes the timer and opens a menu to resume, restart, pick another level, or go back to the main menu.
+- **Keyboard shortcuts:** `Z` undo, `R` reset, `Space` Auto-solve, `Esc` or `P` pause.
+
+When you clear a level, you get up to 3 gems: 3 for the fewest moves possible, 2 for within 3 moves of it, and 1 otherwise. Using Auto-solve still clears the level, but earns no gems.
+
+## Playing the text version
 
 ```bash
 python main.py
@@ -134,13 +155,16 @@ DD...C
 pytest
 ```
 
-The tests cover cars, loading boards, finding legal moves, the solver (including a puzzle with no solution), and the game: reading typed moves, rejecting illegal ones, and the `hint`, `solve`, and `quit` commands.
+The tests cover cars, loading boards, finding legal moves, the solver (including a puzzle with no solution), the text game (reading typed moves, rejecting illegal ones, and the `hint`, `solve`, and `quit` commands), and Pink Lane (selecting and sliding cars, blocked moves, undo, Auto-solve, ratings, and unlocking levels).
+
+The Pink Lane tests need Pygame, so run them with the virtual environment active. Without Pygame they're skipped.
 
 ## Project structure
 
 ```
 rush-hour-solver/
-├── main.py          # level menu and the game: typed moves, hints, solving
+├── play.py          # starts Pink Lane, the Pygame version
+├── main.py          # the text version: typed moves, hints, solving
 ├── pytest.ini       # lets pytest find the project's code
 ├── puzzles/         # easy, medium, and hard puzzle files
 ├── solver/
@@ -148,9 +172,19 @@ rush-hour-solver/
 │   ├── board.py     # Board class and puzzle file loading
 │   ├── moves.py     # finding and applying legal moves
 │   └── bfs.py       # breadth-first search solver
+├── visual/          # Pink Lane
+│   ├── app.py       # game window, screen switching, level progress
+│   ├── theme.py     # colors, sizes, and fonts from the style guide
+│   ├── draw.py      # drawing helpers: cars, buttons, cut-corner shapes, text
+│   ├── title.py     # title screen
+│   ├── levels.py    # level select screen
+│   ├── game.py      # the board, moves panel, solver controls, and win screen
+│   └── fonts/       # Bungee and Chakra Petch (SIL Open Font License)
 └── tests/           # pytest tests for each module
 ```
 
 ## What's next
 
-- A Pygame version with a visual board and an "Auto-solve" button
+- Sound effects (the style guide suggests a short low sound on a blocked move)
+- Save level progress between games
+- More levels
